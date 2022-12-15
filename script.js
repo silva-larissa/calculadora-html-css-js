@@ -26,6 +26,10 @@ var btnLimpaVisor = document.getElementById("limparVisor");
 var btnApagaDigito = document.getElementById("apagaDigito");
 listenerBtn.push(document.getElementById("ponto"));
 
+//Declaração das variáveis de tratamento de ponto duplicado
+var contadorPontos = 0;
+var limitePontos = 1;
+
 for (var i = 0; i < listenerBtn.length; i++) {
   listenerBtn[i].addEventListener("click", escreveNoVisor); //Adiciona o caractere do botão ao visor
 }
@@ -35,19 +39,19 @@ btnResultado.onclick = function () {
 };
 
 btnApagaDigito.onclick = function () {
-    apagaUltimoDigito();
+  apagaUltimoDigito();
 };
 
 btnLimpaVisor.onclick = function () {
-    visor.value = "";
+  visor.value = "";
+  contadorPontos = 0;
 };
 
 function calculaResultado() {
-  var aux = visor.value.substring(visor.value.length - 1, visor.value.length);
-  if (verificaOperador(aux)) { //Se o último dígito for um operador, ele é ignorado na expressão matemática
-    apagaUltimoDigito();
+  if (verificaOperador(visor.value.substring(visor.value.length - 1, visor.value.length))) {
+    apagaUltimoDigito(); //Se o último dígito do visor for um operador, ele é ignorado na expressão matemática
   }
-  
+
   var valorCalculado = calculaArray(visor.value); //Visor exibe o resultado da expressão
 
   if (valorCalculado || valorCalculado == "0") {
@@ -56,19 +60,38 @@ function calculaResultado() {
 }
 
 function apagaUltimoDigito() {
-    if (visor.value.length > 0) {
-      visor.value = visor.value.substring(0, visor.value.length - 1);
+  if (visor.value.length > 0) {
+    if (visor.value[visor.value.length - 1] === ".") {//Se o último caractere deletado for ".", permite recolocar
+      contadorPontos = 0;
     }
+    visor.value = visor.value.substring(0, visor.value.length - 1);
+  }
 }
 
 function escreveNoVisor() {
-  if (verificaOperador(this.value)) {
+  ultimoDigito = this.value;
+
+  if (verificaOperador(ultimoDigito)){
+    contadorPontos = 0;
     if (verificaOperador(visor.value.substring(visor.value.length - 1, visor.value.length))) { //subtituir o valor do operador anterior pelo novo operador digitado
       apagaUltimoDigito();
     }
-  }
-  if (this.value) {
-    visor.value += this.value;
+  } 
+    
+  if (verificaPonto(ultimoDigito) === true){
+    contadorPontos++;
+    if (contadorPontos > limitePontos){
+      return;
+    }    
+  } 
+  visor.value += ultimoDigito;  
+}
+
+function verificaPonto(valorDigitado) {
+  if (valorDigitado === ".") {
+    return true;
+  } else {
+    return false;
   }
 }
 
@@ -78,68 +101,63 @@ function verificaOperador(valorOperador) {
       return true;
     case "/":
       return true;
-      case "+":
-        return true;
-      case "-":
-        return true;
+    case "+":
+      return true;
+    case "-":
+      return true;
     default:
       return false;
   }
 }
 
-//Percorre toda a expressão separando os termos, depois chama as funções que realizam as operações matemáticas
-function calculaArray(exp){ 
-    //console.log(exp);
-    exp = exp.toString().split('+'); 
-    for (a = 0; a < exp.length; a++){ 
-                exp[a] = exp[a].split("-"); 
-                //console.log(exp[a]);
-        for (b = 0; b < exp[a].length; b++) { 
-            exp[a][b] = exp[a][b].split("*");
-            //console.log(exp[a][b]); 
-            for (c = 0; c < exp[a][b].length; c++) { 
-                exp[a][b][c] = exp[a][b][c].split("/");
-                //console.log(exp[a][b][c]);
-                exp[a][b][c] = divideArray(exp[a][b][c]);
-            }
-            exp[a][b] = multiplicaArray(exp[a][b]);
-        }
-        exp[a] = subtraiArray(exp[a]);
+//Percorre toda a expressão em forma de String, separa os termos, depois chama as funções que realizam as operações matemáticas
+function calculaArray(expressao) {
+  expressao = expressao.toString().split("+");
+  for (a = 0; a < expressao.length; a++) {
+    expressao[a] = expressao[a].split("-");
+    for (b = 0; b < expressao[a].length; b++) {
+      expressao[a][b] = expressao[a][b].split("*");
+      for (c = 0; c < expressao[a][b].length; c++) {
+        expressao[a][b][c] = expressao[a][b][c].split("/");
+        expressao[a][b][c] = divideArray(expressao[a][b][c]);
+      }
+      expressao[a][b] = multiplicaArray(expressao[a][b]);
     }
-    exp = adicaoArray(exp);
+    expressao[a] = subtraiArray(expressao[a]);
+  }
+  expressao = adicaoArray(expressao);
 
-    return exp;
-
+  return expressao;
 }
 
 function multiplicaArray(parametro) {
-    var resultadoMult = 1;
-    for (var x = 0; x < parametro.length; x++) {
-        resultadoMult *= parametro[x];
-    }
-    return resultadoMult;
+  var resultadoMult = 1;
+  for (var x = 0; x < parametro.length; x++) {
+    resultadoMult *= parametro[x];
+  }
+  return resultadoMult;
 }
 
 function divideArray(parametro) {
-    var resultadoDiv = parametro[0];
-    for (var x = 1; x < parametro.length; x++) {
-        resultadoDiv /= parametro[x];
-    }
-    return resultadoDiv;
+  var resultadoDiv = parametro[0];
+  for (var x = 1; x < parametro.length; x++) {
+    resultadoDiv /= parametro[x];
+  }
+  return resultadoDiv;
 }
 
 function subtraiArray(parametro) {
-    var resultadoSub = parametro[0];
-    for (var x = 1; x < parametro.length; x++) {
-        resultadoSub -= parametro[x];
-    }
-    return resultadoSub;
+  var resultadoSub = parametro[0];
+  for (var x = 1; x < parametro.length; x++) {
+    resultadoSub -= parametro[x];
+  }
+  return resultadoSub;
 }
 
 function adicaoArray(parametro) {
-    var resultadoAdi = 0;
-    for (var x = 0; x < parametro.length; x++) {
-        resultadoAdi += parametro[x];
-    }
-    return resultadoAdi;
+  var resultadoAdi = 0;
+  for (var x = 0; x < parametro.length; x++) {
+    resultadoAdi += parametro[x];
+  }
+  return resultadoAdi;
 }
