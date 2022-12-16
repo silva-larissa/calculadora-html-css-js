@@ -1,10 +1,12 @@
 # Projeto | Project
  [PT-BR]
  Calculadora desenvolvida com HTML5, CSS3 e JavaScript.
-
-
+ 
  [ENG]
  Calculator developed with HTML5, CSS3 and JavaScript.
+ 
+ ![Calculator preview](https://user-images.githubusercontent.com/109991154/208106462-0c3fe223-7e0f-4601-aab9-442ccbbe3af1.png)
+
  
 # Detalhes | Details
 [PT-BR]
