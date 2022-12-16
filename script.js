@@ -1,14 +1,14 @@
-var visor = document.getElementById("visor");
+var display = document.getElementById("display");
 
 var listenerBtn = [];
 
-//Botões operadores
-listenerBtn.push(document.getElementById("soma"));
-listenerBtn.push(document.getElementById("subtracao"));
-listenerBtn.push(document.getElementById("divisao"));
-listenerBtn.push(document.getElementById("multiplicacao"));
+//Operator buttons
+listenerBtn.push(document.getElementById("sum"));
+listenerBtn.push(document.getElementById("subtraction"));
+listenerBtn.push(document.getElementById("division"));
+listenerBtn.push(document.getElementById("multiplication"));
 
-//Botões numéricos
+//Number buttons
 listenerBtn.push(document.getElementById("num0"));
 listenerBtn.push(document.getElementById("num1"));
 listenerBtn.push(document.getElementById("num2"));
@@ -20,74 +20,73 @@ listenerBtn.push(document.getElementById("num7"));
 listenerBtn.push(document.getElementById("num8"));
 listenerBtn.push(document.getElementById("num9"));
 
-//Botões adicionais
-var btnResultado = document.getElementById("resultado");
-var btnLimpaVisor = document.getElementById("limparVisor");
-var btnApagaDigito = document.getElementById("apagaDigito");
-listenerBtn.push(document.getElementById("ponto"));
+//Additional buttons
+var btnResult = document.getElementById("result");
+var btnCleanDisplay = document.getElementById("cleanDisplay");
+var btnDeleteDigit = document.getElementById("deleteDigit");
+listenerBtn.push(document.getElementById("point"));
 
-//Declaração das variáveis de tratamento de ponto duplicado
-var contadorPontos = 0;
-var limitePontos = 1;
+var pointCounter = 0;
+var pointLimit = 1;
 
 for (var i = 0; i < listenerBtn.length; i++) {
-  listenerBtn[i].addEventListener("click", escreveNoVisor); //Adiciona o caractere do botão ao visor
+  listenerBtn[i].addEventListener("click", writeOnDisplay); 
 }
 
-btnResultado.onclick = function () {
-  calculaResultado();
+btnResult.onclick = function () {
+  calculateResult();
 };
 
-btnApagaDigito.onclick = function () {
-  apagaUltimoDigito();
+btnDeleteDigit.onclick = function () {
+  deleteLastDigit();
 };
 
-btnLimpaVisor.onclick = function () {
-  visor.value = "";
-  contadorPontos = 0;
+btnCleanDisplay.onclick = function () {
+  display.value = "";
+  pointCounter = 0;
 };
 
-function calculaResultado() {
-  if (verificaOperador(visor.value.substring(visor.value.length - 1, visor.value.length))) {
-    apagaUltimoDigito(); //Se o último dígito do visor for um operador, ele é ignorado na expressão matemática
+function calculateResult() {
+  if (verifyOperator(display.value.substring(display.value.length - 1, display.value.length))) {
+    deleteLastDigit(); //If the last digit on display is an operator, it's ignored
   }
 
-  var valorCalculado = calculaArray(visor.value); //Visor exibe o resultado da expressão
+  var calculatedValue = calculateArray(display.value); 
 
-  if (valorCalculado || valorCalculado == "0") {
-    visor.value = valorCalculado;
+  if (calculatedValue || calculatedValue == "0") {
+    display.value = calculatedValue;
   }
 }
 
-function apagaUltimoDigito() {
-  if (visor.value.length > 0) {
-    if (visor.value[visor.value.length - 1] === ".") {//Se o último caractere deletado for ".", permite recolocar
-      contadorPontos = 0;
+function deleteLastDigit() {
+  if (display.value.length > 0) {
+    if (display.value[display.value.length - 1] === ".") {//If the deleted character is a decimal point, it can be replaced by a new one
+      pointCounter = 0;
     }
-    visor.value = visor.value.substring(0, visor.value.length - 1);
+    display.value = display.value.substring(0, display.value.length - 1);
   }
 }
 
-function escreveNoVisor() {
-  ultimoDigito = this.value;
+function writeOnDisplay() {
+  lastDigit = this.value;
 
-  if (verificaOperador(ultimoDigito)){
-    contadorPontos = 0;
-    if (verificaOperador(visor.value.substring(visor.value.length - 1, visor.value.length))) { //subtituir o valor do operador anterior pelo novo operador digitado
-      apagaUltimoDigito();
+  if (verifyOperator(lastDigit)){
+    pointCounter = 0;
+    if (verifyOperator(display.value.substring(display.value.length - 1, display.value.length))) { //replaces the previous operator by the new operator inputed
+      deleteLastDigit();
     }
   } 
     
-  if (verificaPonto(ultimoDigito) === true){
-    contadorPontos++;
-    if (contadorPontos > limitePontos){
+  if (verifyDecimalPoint(lastDigit) === true){
+    pointCounter++;
+    if (pointCounter > pointLimit){
       return;
     }    
   } 
-  visor.value += ultimoDigito;  
+  display.value += lastDigit;  
 }
 
-function verificaPonto(valorDigitado) {
+function verifyDecimalPoint(valorDigitado) {
   if (valorDigitado === ".") {
     return true;
   } else {
@@ -95,8 +94,8 @@ function verificaPonto(valorDigitado) {
   }
 }
 
-function verificaOperador(valorOperador) {
-  switch (valorOperador) {
+function verifyOperator(operatorValue) {
+  switch (operatorValue) {
     case "*":
       return true;
     case "/":
@@ -110,54 +109,53 @@ function verificaOperador(valorOperador) {
   }
 }
 
-//Percorre toda a expressão em forma de String, separa os termos, depois chama as funções que realizam as operações matemáticas
-function calculaArray(expressao) {
-  expressao = expressao.toString().split("+");
-  for (a = 0; a < expressao.length; a++) {
-    expressao[a] = expressao[a].split("-");
-    for (b = 0; b < expressao[a].length; b++) {
-      expressao[a][b] = expressao[a][b].split("*");
-      for (c = 0; c < expressao[a][b].length; c++) {
-        expressao[a][b][c] = expressao[a][b][c].split("/");
-        expressao[a][b][c] = divideArray(expressao[a][b][c]);
+function calculateArray(exp) {
+  exp = exp.toString().split("+");
+  for (a = 0; a < exp.length; a++) {
+    exp[a] = exp[a].split("-");
+    for (b = 0; b < exp[a].length; b++) {
+      exp[a][b] = exp[a][b].split("*");
+      for (c = 0; c < exp[a][b].length; c++) {
+        exp[a][b][c] = exp[a][b][c].split("/");
+        exp[a][b][c] = divideArray(exp[a][b][c]);
       }
-      expressao[a][b] = multiplicaArray(expressao[a][b]);
+      exp[a][b] = multiplyArray(exp[a][b]);
     }
-    expressao[a] = subtraiArray(expressao[a]);
+    exp[a] = subtractArray(exp[a]);
   }
-  expressao = adicaoArray(expressao);
+  exp = sumArray(exp);
 
-  return expressao;
+  return exp;
 }
 
-function multiplicaArray(parametro) {
-  var resultadoMult = 1;
-  for (var x = 0; x < parametro.length; x++) {
-    resultadoMult *= parametro[x];
+function multiplyArray(parameter) {
+  var resultMult = 1;
+  for (var x = 0; x < parameter.length; x++) {
+    resultMult *= parameter[x];
   }
-  return resultadoMult;
+  return resultMult;
 }
 
-function divideArray(parametro) {
-  var resultadoDiv = parametro[0];
-  for (var x = 1; x < parametro.length; x++) {
-    resultadoDiv /= parametro[x];
+function divideArray(parameter) {
+  var resultDiv = parameter[0];
+  for (var x = 1; x < parameter.length; x++) {
+    resultDiv /= parameter[x];
   }
-  return resultadoDiv;
+  return resultDiv;
 }
 
-function subtraiArray(parametro) {
-  var resultadoSub = parametro[0];
-  for (var x = 1; x < parametro.length; x++) {
-    resultadoSub -= parametro[x];
+function subtractArray(parameter) {
+  var resultSub = parameter[0];
+  for (var x = 1; x < parameter.length; x++) {
+    resultSub -= parameter[x];
   }
-  return resultadoSub;
+  return resultSub;
 }
 
-function adicaoArray(parametro) {
-  var resultadoAdi = 0;
-  for (var x = 0; x < parametro.length; x++) {
-    resultadoAdi += parametro[x];
+function sumArray(parameter) {
+  var resultSum = 0;
+  for (var x = 0; x < parameter.length; x++) {
+    resultSum += parameter[x];
   }
-  return resultadoAdi;
+  return resultSum;
 }
