@@ -1,8 +1,7 @@
 # Projeto | Project
  [PT-BR]
  Calculadora desenvolvida com HTML5, CSS3 e JavaScript.
-
-
+ 
  [ENG]
  Calculator developed with HTML5, CSS3 and JavaScript.
  
@@ -21,3 +20,8 @@
 - Limits the use of decimal point (".") to one;
 - Does not allow the input of more than one mathematical operator in a row;
 - Developed eval()-free.
+
+# Visualização | Preview
+
+![calculator Preview](https://user-images.githubusercontent.com/109991154/208108049-827e482d-7de4-4641-a531-b1d940efa546.png)
+
