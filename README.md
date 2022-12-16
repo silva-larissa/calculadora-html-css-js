@@ -1,6 +1,10 @@
 # Projeto | Project
- [PT-BR] Calculadora desenvolvida com HTML5, CSS3 e JavaScript.
- [ENG] Calculator developed with HTML5, CSS3 and JavaScript.
+ [PT-BR]
+ Calculadora desenvolvida com HTML5, CSS3 e JavaScript.
+
+
+ [ENG]
+ Calculator developed with HTML5, CSS3 and JavaScript.
  
 # Detalhes | Details
 [PT-BR]
@@ -9,6 +13,7 @@
  - Limita o uso de um ponto decimal (".") por número inserido;
  - Não permite inserção de mais de um operador matemático em sequência;
  - Desenvolvida sem uso da função eval().
+
 
  [ENG]
 - Performs the four arithmetic operations: addition, subtraction, division and multiplication;
