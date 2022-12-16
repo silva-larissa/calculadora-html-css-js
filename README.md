@@ -5,9 +5,6 @@
  [ENG]
  Calculator developed with HTML5, CSS3 and JavaScript.
  
- ![Calculator preview](https://user-images.githubusercontent.com/109991154/208106462-0c3fe223-7e0f-4601-aab9-442ccbbe3af1.png)
-
- 
 # Detalhes | Details
 [PT-BR]
  - Realiza operações básicas: adição, subtração, divisão e multiplicação;
@@ -23,3 +20,7 @@
 - Limits the use of decimal point (".") to one;
 - Does not allow the input of more than one mathematical operator in a row;
 - Developed eval()-free.
+
+# Preview
+
+ ![Calculator preview](https://user-images.githubusercontent.com/109991154/208106462-0c3fe223-7e0f-4601-aab9-442ccbbe3af1.png)
